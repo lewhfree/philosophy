@@ -1,39 +1,27 @@
-import wikipediaapi as wikipedia
-import time
-userAgentString = "PhilosophyChecker/0.0.1 (github.com/lewhfree/philosophy)"
+import requests
 
-wiki = wikipedia.Wikipedia(user_agent=userAgentString, language='en', extract_format=wikipedia.ExtractFormat.HTML)
+from bs4 import BeautifulSoup
 
-def firstKey(keys, text):
-    positions = {
-        key: text.find(key) for key in keys if key in text
-    }
+def getLink(title):
+    url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title}"
+    headers = {"User-Agent": "philosophyFinder/0.0.1 (github.com/lewhfree/philosophy)"}
+    request = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request.text, "html.parser")
 
-    if not positions:
-        return None
-    return min(positions, key=positions.get)
-
-startArticle = "Bogosort"
-
-currArticle = startArticle
-
-reached = set()
+    for p in soup.find_all("p", recursive=True):
+        for a in p.find_all("a", recursive=True):
+            ref = a.get("href")
+            if ref:
+                return a['href'].split("/")[1]
+    return None
 
 target = "Philosophy"
 
-while target !=  currArticle:
-    reached.add(currArticle)
-    
-    page = wiki.page(currArticle)
-    print(page.text)
-    links = page.links
+start = "Bogosort"
 
-    first = next(iter(links.items()))
-    print(first)
+current = start
+print(current)
 
-    print(firstKey(links.keys(), page.text))
-
-    time.sleep(100)
-
-    if not page.exists():
-        print("Article doesn't exist")
+while target != current:
+    current = getLink(current)
+    print(current)
