@@ -38,7 +38,7 @@ target = "Philosophy"
 
 start = "Cuttlefish"
 
-start = getRandomTitle()
+# start = getRandomTitle()
 
 
 current = start
