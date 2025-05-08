@@ -36,7 +36,14 @@ seen = set()
 
 target = "Philosophy"
 
-start = "Cuttlefish"
+index = 1
+
+with open("titles.txt", "r") as file:
+    for i, line in enumerate(file, start=1):
+        if i == index:
+            start = line.strip()
+
+print(start)
 
 # start = getRandomTitle()
 
@@ -50,8 +57,13 @@ while target != current:
     print(current)
     if current in seen:
         print("Seen before, loop")
+        with open("failed.txt","a") as file:
+            file.write(start + "\n")
         exit()
     else:
         seen.add(current)
 
 print("Seen " + str(len(seen)))
+
+with open("worked.txt", "a"):
+    file.write(start + "\n")
