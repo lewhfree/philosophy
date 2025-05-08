@@ -1,9 +1,10 @@
 import requests
 
 from bs4 import BeautifulSoup
-
+import urllib
 def getLink(title):
-    url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title}"
+    title2 = urllib.parse.quote(title)
+    url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title2}"
     headers = {"User-Agent": "philosophyFinder/0.0.1 (github.com/lewhfree/philosophy)"}
     request = requests.get(url, headers=headers)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -11,7 +12,7 @@ def getLink(title):
     for p in soup.find_all("p", recursive=True):
         for a in p.find_all("a", recursive=True):
             ref = a.get("href")
-            if ref and "#cite_note" not in ref and "Help:" not in ref:
+            if ref and "#cite_note" not in ref and "Help:" not in ref and "" != ref:
                 return a['href'].split("/")[1]
     return None
 index = 0
@@ -31,7 +32,7 @@ while True:
             if i == index:
                 start = line.strip()
                 break
-            
+           
     current = start
     print(current)
     seen.add(current)
@@ -40,11 +41,12 @@ while True:
     while target != current:
         current = getLink(current)
         print(current)
-        if current in seen:
+        if current in seen or current in failed:
             print("Seen before, loop")
             with open("failed.txt","a") as bile:
                 bile.write(start + "\n")
             failed.add(start)
+            failed.update(seen)
             break
         else:
             seen.add(current)
@@ -54,3 +56,4 @@ while True:
         with open("worked.txt", "a") as dfile:
             dfile.write(start + "\n")
         worked.add(start)
+        worked.update(seen)
