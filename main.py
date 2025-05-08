@@ -16,6 +16,9 @@ def getLink(title):
     return None
 index = 0
 
+worked = set()
+failed = set()
+
 while True:
     seen = set()
 
@@ -32,6 +35,7 @@ while True:
     current = start
     print(current)
     seen.add(current)
+
     
     while target != current:
         current = getLink(current)
@@ -40,6 +44,7 @@ while True:
             print("Seen before, loop")
             with open("failed.txt","a") as bile:
                 bile.write(start + "\n")
+            failed.add(start)
             break
         else:
             seen.add(current)
@@ -48,3 +53,4 @@ while True:
 
         with open("worked.txt", "a") as dfile:
             dfile.write(start + "\n")
+        worked.add(start)
