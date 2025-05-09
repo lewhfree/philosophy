@@ -40,6 +40,10 @@ while True:
     
     while target != current:
         current = getLink(current)
+        if not current:
+            failed.add(start)
+            failed.update(seen)
+            break
         print(current)
         if current in seen or current in failed:
             print("Seen before, loop")
@@ -48,6 +52,11 @@ while True:
             failed.add(start)
             failed.update(seen)
             break
+        elif current in worked:
+            target = current
+            print("seen worked path before")
+            worked.update(seen)
+            # break
         else:
             seen.add(current)
     else:
