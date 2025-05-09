@@ -7,12 +7,16 @@ def getLink(title):
     url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title2}"
     headers = {"User-Agent": "philosophyFinder/0.0.1 (github.com/lewhfree/philosophy)"}
     request = requests.get(url, headers=headers)
+    if request.status_code != 200:
+        print("borked http error code" + str(request.status_code))
+        return None
+    
     soup = BeautifulSoup(request.text, "html.parser")
 
     for p in soup.find_all("p", recursive=True):
         for a in p.find_all("a", recursive=True):
             ref = a.get("href")
-            if ref and "#cite_note" not in ref and "Help:" not in ref and "" != ref:
+            if ref and "#cite_note" not in ref and "Help:" not in ref and "" != ref and "Wikipedia:" not in ref:
                 return a['href'].split("/")[1]
     return None
 index = 0
