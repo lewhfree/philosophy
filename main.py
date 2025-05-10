@@ -16,7 +16,7 @@ def getLink(title):
     for p in soup.find_all("p", recursive=True):
         for a in p.find_all("a", recursive=True):
             ref = a.get("href")
-            if ref and "#cite_note" not in ref and "Help:" not in ref and "" != ref and "Wikipedia:" not in ref:
+            if ref and "#cite_note" not in ref and "Help:" not in ref and "" != ref and "Wikipedia:" not in ref and "upload.wikimedia.org" not in ref and "/wiki/" not in ref:
                 return a['href'].split("/")[1]
     return None
 index = 0
